@@ -127,13 +127,13 @@ function GreenInterpolator(scfres; n_bands=10)
 
     # generate bzmesh and map
     cell = Cells.Cell(; lattice=Matrix(austrip.(lattice)), atoms=atoms, positions=positions)
-    bzmesh = BZMeshes.Monkhorst_Pack(cell=cell, size=kgrid, shift=[false, false, false])
+    bzmesh = BZMeshes.Monkhorst_Pack(cell=cell, size=kgrid.kgrid_size, shift=[false, false, false])
     meshmap = MeshMaps.MeshMap(bzmesh)
     rbzmesh = MeshMaps.ReducedBZMesh(bzmesh, meshmap)
 
-    kx = LinRange(-0.5, 0.5, kgrid[1] + 1)
-    ky = LinRange(-0.5, 0.5, kgrid[2] + 1)
-    kz = LinRange(-0.5, 0.5, kgrid[3] + 1)
+    kx = LinRange(-0.5, 0.5, kgrid.kgrid_size[1] + 1)
+    ky = LinRange(-0.5, 0.5, kgrid.kgrid_size[2] + 1)
+    kz = LinRange(-0.5, 0.5, kgrid.kgrid_size[3] + 1)
 
 
     gvfromscf = collect_gvector(scfres)
@@ -164,11 +164,11 @@ function GreenInterpolator(scfres; n_bands=10)
 
     for bandidx in 1:n_bands
         # dispersion
-        bandarray = zeros((kgrid .+ 1)...)
-        for ikx in 1:kgrid[1]+1
-            for iky in 1:kgrid[2]+1
-                for ikz in 1:kgrid[3]+1
-                    # idx = AbstractMeshes._inds2ind(tuple(kgrid...), [kx, ky, kz])
+        bandarray = zeros((kgrid.kgrid_size .+ 1)...)
+        for ikx in 1:kgrid.kgrid_size[1]+1
+            for iky in 1:kgrid.kgrid_size[2]+1
+                for ikz in 1:kgrid.kgrid_size[3]+1
+                    # idx = AbstractMeshes._inds2ind(tuple(kgrid.kgrid_size...), [kx, ky, kz])
                     idx = AbstractMeshes.locate(rbzmesh, lattice_vector(rbzmesh.mesh) * [kx[ikx], ky[iky], kz[ikz]])
                     bandarray[ikx, iky, ikz] = ϵ[bandidx, idx]
                 end
@@ -288,10 +288,7 @@ function greenfreeτ(gi, gv1, gv2, k, τ; beta=gi.beta)
     return greenfreeτ(gi, gi1, gi2, k, τ; beta=beta)
 end
 
-
 end
-
-
 
 if abspath(PROGRAM_FILE) == @__FILE__
 

@@ -253,13 +253,17 @@ function MeshMaps.MeshMap(mesh::UniformBZMesh{T,DIM},
 
     cell, _ = PointSymmetry.spglib_cell(lat, atoms, pos, mag_moments)
     # println(cell)
-    ngrid, mapping, _grid = PointSymmetry.get_ir_reciprocal_mesh(cell, _kgrid_size, is_shift;
-        is_time_reversal=is_time_reversal, symprec=PointSymmetry.SYMMETRY_TOLERANCE)
+    # ngrid, mapping, _grid = PointSymmetry.get_ir_reciprocal_mesh(cell, _kgrid_size, PointSymmetry.SYMMETRY_TOLERANCE;
+    #     is_shift=is_shift, is_time_reversal=is_time_reversal)
+    ir = PointSymmetry.get_ir_reciprocal_mesh(cell, _kgrid_size, PointSymmetry.SYMMETRY_TOLERANCE;
+        is_shift=is_shift, is_time_reversal=is_time_reversal)
+    ngrid, mapping, _grid = ir.mesh, ir.ir_mapping_table, ir.grid_address
 
-    _grid = Int.(_grid)
-    grid = Vector{Vector{Int}}()
+    # _grid = Int.(_grid)
+    grid = Vector{SVector{3,Int}}()
     for i in 1:length(mesh)
-        k = _grid[3*(i-1)+1:3*i]
+        # k = _grid[3*(i-1)+1:3*i]
+        k = _grid[i]
         # println(k)
         push!(grid, k)
     end

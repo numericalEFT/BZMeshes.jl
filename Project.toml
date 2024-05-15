@@ -19,7 +19,7 @@ spglib_jll = "ac4a9f1e-bdb2-5204-990c-47c8b2f70d4e"
 AbstractTrees = "0.3, 0.4"
 CompositeGrids = "0.0.6, 0.1"
 Roots = "2.0"
-Spglib = "0.6.0"
+Spglib = "0.6, 0.9"
 StaticArrays = "1"
 julia = "1.6"
 

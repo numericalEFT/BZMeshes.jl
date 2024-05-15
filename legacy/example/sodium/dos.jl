@@ -40,7 +40,7 @@ function integrand(var, config)
     result = DFTGreen.greenω(gi, gv1, gv1, k, ω; δ=δ) * factor
     # result = DFTGreen.greenfree(gi, gv1, gv1, k, ω; δ=δ) * factor
     # return (real(result), imag(result))
-    return (result,)
+    return result
     # return 1.0, 1.0
 end
 
@@ -60,6 +60,7 @@ function run(steps)
     dof = [[1, 3, 1],] # degrees of freedom of the normalization diagram and the bubble
     # obs = [zeros(Float64, NExt), zeros(Float64, NExt)]
     obs = [zeros(ComplexF64, NExt),]
+    # obs = zeros(ComplexF64, NExt)
 
     # config = MCIntegration.Configuration(var=(T, K, Ext), dof=dof, obs=obs, para=para)
     result = MCIntegration.integrate(integrand; measure=measure,
@@ -67,7 +68,7 @@ function run(steps)
         neval=steps, print=0, block=16, parallel=:thread, type=ComplexF64)
 
     if isnothing(result) == false
-        avg, std = result.mean, result.stdev
+        avg, std = result.mean[1], result.stdev[1]
 
         println("avg=$avg, std=$std")
         # println(MCIntegration.summary(result))
